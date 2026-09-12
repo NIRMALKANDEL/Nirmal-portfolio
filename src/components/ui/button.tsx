@@ -42,6 +42,23 @@ export function LinkButton({
   rel,
 }: LinkButtonProps) {
   const isExternal = href.startsWith("http");
+  // Static assets (e.g. /resume.pdf) aren't app routes — next/link would try
+  // to RSC-prefetch them and log a 404. Use a plain anchor for those instead.
+  const isStaticAsset = !isExternal && /\.[a-z0-9]+$/i.test(href);
+
+  if (isStaticAsset) {
+    return (
+      <a
+        href={href}
+        target={target}
+        rel={rel}
+        className={cn(base, variants[variant], sizes[size], className)}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return (
     <Link
       href={href}
