@@ -10,8 +10,8 @@ import { ProjectCard } from "@/components/projects/project-card";
 export function FeaturedProjects() {
   const { t } = useLanguage();
   const featured = getFeaturedProjects();
-  const bigCards = featured.slice(0, 2);
-  const smallCards = featured.slice(2);
+  const bigCards = featured.slice(0, 3);
+  const smallCards = featured.slice(3);
 
   return (
     <section id="projects" className="py-16 sm:py-20">

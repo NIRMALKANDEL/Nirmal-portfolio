@@ -26,6 +26,9 @@ export type Translations = {
     backend: string;
     database: string;
     tools: string;
+    timelineEyebrow: string;
+    timelineTitle: string;
+    timelineSubtitle: string;
   };
   projects: {
     eyebrow: string;

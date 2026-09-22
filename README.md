@@ -2,6 +2,8 @@
 
 Personal portfolio for **Nirmal Kandel**, Full Stack / MERN Stack Developer. Built with Next.js App Router, TypeScript and Tailwind CSS.
 
+**Live site:** [nirmal-portfolio-eta.vercel.app](https://nirmal-portfolio-eta.vercel.app)
+
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router, Server + Client Components, `next/image`, `next/og`)
@@ -18,6 +20,7 @@ Personal portfolio for **Nirmal Kandel**, Full Stack / MERN Stack Developer. Bui
 - Tech / Beyond Code mode switch (`/` vs `/non-tech`) — non-tech experience never competes visually with the core developer identity
 - Curated, data-driven project content (`src/data/projects.ts`) verified against the real GitHub repositories — no invented features, metrics or URLs
 - Dynamic project case-study pages (`/projects/[slug]`)
+- Skills section with a skills timeline (`src/data/timeline.ts`) built from GitHub repo dates and work history
 - Server-side contact form (`/api/contact`) with validation, loading/success/error states
 - SEO: metadata per route, sitemap, robots.txt, generated favicon + OG image
 - Mobile-first responsive layout, accessible navigation, `prefers-reduced-motion` respected
@@ -37,7 +40,7 @@ src/
   lib/                # utils
 public/
   projects/           # project preview images (SVG placeholders — swap for real screenshots)
-  resume.pdf          # add your resume file here (see below)
+  resume.pdf          # downloadable resume
 ```
 
 ## Local Setup
@@ -59,15 +62,9 @@ Copy `.env.example` to `.env.local` and fill in:
 | `CONTACT_TO_EMAIL` | Inbox that receives contact form messages. Defaults to the email in `src/data/site.ts`. |
 | `CONTACT_FROM_EMAIL` | Sender address — must be a verified domain/sender in Resend. |
 
-## Adding Your Resume
+## Resume
 
-No resume file was supplied when this project was generated. Drop your PDF at:
-
-```
-public/resume.pdf
-```
-
-The "Download Resume" buttons in the Hero and Contact areas already link to `/resume.pdf`.
+The resume lives at `public/resume.pdf`. The "Download Resume" buttons in the Hero and Contact areas link to `/resume.pdf`.
 
 ## Available Routes
 
@@ -76,7 +73,7 @@ The "Download Resume" buttons in the Hero and Contact areas already link to `/re
 | `/` | Home — hero, skills, featured projects, experience/education preview, Beyond Code teaser, contact CTA |
 | `/about` | Full bio |
 | `/projects` | All projects |
-| `/projects/[slug]` | Case study (`netflix-gpt`, `devtinder`, `mern-todo`) |
+| `/projects/[slug]` | Case study (`netflix-gpt`, `devtinder`, `nibblr`, `brightway-solar`, `nextjs-video-app`, `mern-todo`) |
 | `/experience` | Full work history |
 | `/education` | Full education history |
 | `/non-tech` | Beyond Code — events, operations & community experience |
@@ -84,7 +81,10 @@ The "Download Resume" buttons in the Hero and Contact areas already link to `/re
 
 ## Deployment (Vercel)
 
-1. Push this repository to GitHub.
-2. Import the repo in [Vercel](https://vercel.com/new).
-3. Add the environment variables from `.env.example` in the Vercel project settings.
-4. Deploy — no additional build configuration required.
+Deployed on Vercel at **https://nirmal-portfolio-eta.vercel.app**. The Vercel project is connected to this GitHub repo, so every push to `master` triggers a new production deployment.
+
+To set up your own copy:
+
+1. Import the repo in [Vercel](https://vercel.com/new).
+2. Add the environment variables from `.env.example` in the Vercel project settings.
+3. Deploy — no additional build configuration required.

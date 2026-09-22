@@ -19,6 +19,7 @@ export function AboutContent() {
         <p>{aboutContent.intro[locale]}</p>
         <p>{aboutContent.focus[locale]}</p>
         <p>{aboutContent.path[locale]}</p>
+        <p>{aboutContent.now[locale]}</p>
         <p>{aboutContent.interests[locale]}</p>
       </div>
 

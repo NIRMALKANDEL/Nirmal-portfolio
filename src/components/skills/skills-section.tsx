@@ -5,6 +5,7 @@ import { useLanguage } from "@/context/language-context";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
+import { SkillsTimeline } from "@/components/skills/skills-timeline";
 
 export function SkillsSection() {
   const { t } = useLanguage();
@@ -38,6 +39,7 @@ export function SkillsSection() {
             </div>
           ))}
         </div>
+        <SkillsTimeline />
       </Container>
     </section>
   );

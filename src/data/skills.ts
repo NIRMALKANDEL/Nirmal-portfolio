@@ -4,7 +4,8 @@ export type SkillGroup = {
 };
 
 // Verified against resume + NIRMALKANDEL GitHub repositories (devTinder,
-// devTinder-web, netflix-gpt, mern-todo, NEXT-project-imagekit).
+// devTinder-web, netflix-gpt, mern-todo, NEXT-project-imagekit,
+// Food-dilivery-app- / Nibblr, DUMMY-client-website- / Brightway Solar).
 export const skillGroups: SkillGroup[] = [
   {
     key: "frontend",
@@ -14,26 +15,38 @@ export const skillGroups: SkillGroup[] = [
       "JavaScript (ES6+)",
       "TypeScript",
       "Redux Toolkit",
+      "React Router",
       "Tailwind CSS",
       "Material UI",
+      "Framer Motion",
       "Bootstrap",
     ],
   },
   {
     key: "backend",
-    items: ["Node.js", "Express.js", "REST APIs", "JWT Auth"],
+    items: [
+      "Node.js",
+      "Express.js",
+      "REST APIs",
+      "Next.js API Routes",
+      "JWT Auth",
+      "NextAuth.js",
+    ],
   },
   {
     key: "database",
-    items: ["MongoDB", "Firebase"],
+    items: ["MongoDB", "Mongoose", "Firebase", "ImageKit", "Vercel"],
   },
   {
     key: "tools",
     items: [
+      "Claude Code",
+      "Gemini API",
       "Git",
       "GitHub",
       "GitLab",
       "CI/CD",
+      "Vite",
       "Jest",
       "Postman",
       "Jira",
