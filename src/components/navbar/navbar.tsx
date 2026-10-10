@@ -148,11 +148,11 @@ export function Navbar() {
             animate={{ clipPath: "circle(150% at calc(100% - 44px) 40px)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 44px) 40px)" }}
             transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 flex flex-col bg-[var(--background)] px-6 pb-10 pt-28 lg:hidden"
+            className="fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-[var(--background)] px-6 pb-10 pt-28 lg:hidden"
           >
             <div aria-hidden className="absolute inset-0 -z-10 bg-grid mask-radial opacity-60" />
             <nav className="flex flex-col gap-1" aria-label="Mobile" style={{ perspective: 800 }}>
-              {[{ href: "/", label: t.nav.home }, ...navLinks].map((link, i) => (
+              {[{ href: "/", label: t.nav.home }, ...navLinks, { href: "/non-tech", label: t.nav.nonTech }].map((link, i) => (
                 <motion.div
                   key={link.href}
                   initial={{ opacity: 0, y: 40, rotateX: -70 }}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { getFeaturedProjects, projects, type Project } from "@/data/projects";
 import type { RepoStats } from "@/lib/github";
 import { useLanguage } from "@/context/language-context";
@@ -26,18 +26,46 @@ export function FeaturedProjects({ stats }: { stats: Record<string, RepoStats[]>
   const featured = getFeaturedProjects();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const reduce = useReducedMotion();
+  // Mobile carousel: which card is snapped into view.
+  const [current, setCurrent] = useState(0);
+
+  function onCarouselScroll() {
+    const el = ref.current;
+    if (!el) return;
+    const cards = [...el.children] as HTMLElement[];
+    const origin = cards[0]?.offsetLeft ?? 0;
+    let nearest = 0;
+    cards.forEach((card, i) => {
+      if (Math.abs(card.offsetLeft - origin - el.scrollLeft) < Math.abs(cards[nearest].offsetLeft - origin - el.scrollLeft)) nearest = i;
+    });
+    setCurrent(nearest);
+  }
+
+  function goTo(i: number) {
+    const el = ref.current;
+    const cards = el ? ([...el.children] as HTMLElement[]) : [];
+    if (!el || !cards[i]) return;
+    el.scrollTo({ left: cards[i].offsetLeft - cards[0].offsetLeft, behavior: reduce ? "auto" : "smooth" });
+  }
 
   return (
-    <section id="projects" className="relative py-24 sm:py-32">
+    <section id="projects" className="relative py-16 sm:py-32">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading eyebrow={t.projects.eyebrow} title={t.projects.title} subtitle={t.projects.subtitle} />
-          <span className="font-display text-[clamp(4rem,10vw,8rem)] font-bold leading-none text-stroke" aria-hidden>
+          <span className="font-display text-[clamp(4rem,10vw,8rem)] font-bold leading-none text-stroke max-md:text-5xl" aria-hidden>
             {String(featured.length).padStart(2, "0")}
           </span>
         </div>
 
-        <div ref={ref} className="relative mt-14" style={{ perspective: 1600 }}>
+        {/* Below md the deck becomes a native, snap-scrolling horizontal row. */}
+        <div
+          ref={ref}
+          onScroll={onCarouselScroll}
+          className="relative mt-14 max-md:-mx-5 max-md:mt-8 max-md:flex max-md:snap-x max-md:snap-mandatory max-md:scroll-px-5 max-md:gap-3 max-md:overflow-x-auto max-md:overscroll-x-contain max-md:px-5 max-md:pb-2 max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden"
+          style={{ perspective: 1600 }}
+        >
           {featured.map((project, i) => (
             <StackCard
               key={project.slug}
@@ -50,7 +78,31 @@ export function FeaturedProjects({ stats }: { stats: Record<string, RepoStats[]>
           ))}
         </div>
 
-        <div className="mt-16 flex flex-col items-center gap-4 text-center">
+        <div className="mt-4 flex items-center justify-center gap-1 md:hidden">
+          <CarouselButton label={t.projects.carouselPrev} disabled={current === 0} onClick={() => goTo(current - 1)}>
+            <ArrowLeft size={16} />
+          </CarouselButton>
+          {featured.map((project, i) => (
+            <button
+              key={project.slug}
+              type="button"
+              aria-label={`${t.projects.carouselGoTo} ${i + 1}: ${project.title}`}
+              aria-current={i === current ? "true" : undefined}
+              onClick={() => goTo(i)}
+              className="flex h-11 w-7 items-center justify-center"
+            >
+              <span
+                className="h-1.5 rounded-full transition-all duration-300"
+                style={{ width: i === current ? 20 : 6, background: i === current ? project.theme.accent : "var(--border)" }}
+              />
+            </button>
+          ))}
+          <CarouselButton label={t.projects.carouselNext} disabled={current === featured.length - 1} onClick={() => goTo(current + 1)}>
+            <ArrowRight size={16} />
+          </CarouselButton>
+        </div>
+
+        <div className="mt-16 flex flex-col items-center gap-4 text-center max-md:mt-8">
           <p className="text-sm text-[var(--muted)]">
             + {projects.length - featured.length} more — {projects.filter((p) => !p.featured).map((p) => p.title).join(", ")}
           </p>
@@ -90,7 +142,7 @@ function StackCard({
   const dim = useTransform(progress, [start, 1], [0, index === total - 1 ? 0 : 0.45]);
 
   return (
-    <div className="relative pb-6 lg:sticky lg:top-28 lg:flex lg:h-[min(78vh,720px)] lg:items-start lg:pb-10" style={{ zIndex: index + 1 }}>
+    <div className="relative pb-6 max-md:w-[86%] max-md:shrink-0 max-md:snap-start max-md:pb-0 lg:sticky lg:top-28 lg:flex lg:h-[min(78vh,720px)] lg:items-start lg:pb-10" style={{ zIndex: index + 1 }}>
       <motion.div
         // The 3D deck only runs where the cards are sticky (lg+).
         style={deck ? { scale, rotateX, top: index * 18, transformOrigin: "50% 0%" } : undefined}
@@ -98,7 +150,7 @@ function StackCard({
       >
         <TiltCard max={4} glow={project.theme.accent} className="rounded-[2rem]">
           <article
-            className="relative grid h-full rounded-[2rem] border border-[var(--border)] bg-[var(--card)] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] preserve-3d lg:grid-cols-[1.25fr_1fr]"
+            className="relative grid h-full rounded-[2rem] border max-md:grid-rows-[auto_1fr] border-[var(--border)] bg-[var(--card)] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] preserve-3d lg:grid-cols-[1.25fr_1fr]"
             style={{ "--p": project.theme.accent } as React.CSSProperties}
           >
             <Link
@@ -153,6 +205,30 @@ function StackCard({
         )}
       </motion.div>
     </div>
+  );
+}
+
+function CarouselButton({
+  label,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-[var(--foreground)] transition-opacity disabled:opacity-30"
+    >
+      {children}
+    </button>
   );
 }
 

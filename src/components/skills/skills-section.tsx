@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useAnimationFrame, useInView, useReducedMotion } from "motion/react";
 import { Code2, Database, Server, Wrench } from "lucide-react";
 import { skillGroups, type SkillGroup } from "@/data/skills";
@@ -27,15 +27,34 @@ export function SkillsSection() {
   const { t } = useLanguage();
   const [active, setActive] = useState<SkillGroup["key"]>("frontend");
   const activeGroup = skillGroups.find((g) => g.key === active)!;
+  const mobile = useIsMobile();
+  const reduce = useReducedMotion();
+  // Phones hide the tabs: the globe cycles the highlighted group itself, and a tap picks one.
+  const [focus, setFocus] = useState<SkillGroup["key"]>("frontend");
+  const lastPick = useRef(0);
+
+  useEffect(() => {
+    if (!mobile || reduce) return;
+    const id = window.setInterval(() => {
+      if (Date.now() - lastPick.current < 6000) return;
+      setFocus((key) => skillGroups[(skillGroups.findIndex((g) => g.key === key) + 1) % skillGroups.length].key);
+    }, 3500);
+    return () => window.clearInterval(id);
+  }, [mobile, reduce]);
+
+  function pick(key: SkillGroup["key"]) {
+    lastPick.current = Date.now();
+    setFocus(key);
+  }
 
   return (
-    <section id="skills" className="relative overflow-hidden py-24 sm:py-32">
+    <section id="skills" className="relative overflow-hidden py-16 sm:py-32">
       <div aria-hidden className="absolute inset-0 -z-10 bg-grid mask-radial opacity-60" />
       <Container>
         <SectionHeading eyebrow={t.nav.skills} title={t.skills.title} subtitle={t.skills.subtitle} />
 
-        <div className="mt-14 grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
-          <div className="flex flex-col gap-6">
+        <div className="mt-8 grid items-center gap-12 md:mt-14 lg:grid-cols-[1fr_1.1fr]">
+          <div className="hidden flex-col gap-6 md:flex">
             <div role="tablist" aria-label={t.skills.title} className="grid grid-cols-2 gap-2">
               {skillGroups.map((group) => (
                 <button
@@ -84,7 +103,21 @@ export function SkillsSection() {
             </motion.ul>
           </div>
 
-          <SkillSphere active={active} />
+          <SkillSphere active={mobile ? focus : active} mobile={mobile} onPick={pick} />
+
+          {/* Mobile-only: the globe is aria-hidden, so keep the skills readable for screen readers. */}
+          <p aria-hidden className="-mt-10 flex items-center justify-center gap-2 font-mono text-[11px] text-[var(--muted)] md:hidden">
+            <span className="h-1.5 w-1.5 rounded-full transition-colors duration-500" style={{ background: GROUP_COLORS[focus] }} />
+            <span className="text-[var(--foreground)]">{t.skills[focus]}</span>
+            <span>· {t.skills.globeHint}</span>
+          </p>
+          <ul className="sr-only md:hidden">
+            {skillGroups.map((group) => (
+              <li key={group.key}>
+                {t.skills[group.key]}: {group.items.join(", ")}
+              </li>
+            ))}
+          </ul>
         </div>
       </Container>
     </section>
@@ -95,11 +128,21 @@ export function SkillsSection() {
  * Every skill placed on a sphere (Fibonacci lattice) and projected each frame.
  * Drift is automatic; the pointer steers it. The active group glows.
  */
-function SkillSphere({ active }: { active: SkillGroup["key"] }) {
+function SkillSphere({
+  active,
+  mobile = false,
+  onPick,
+}: {
+  active: SkillGroup["key"];
+  mobile?: boolean;
+  onPick?: (key: SkillGroup["key"]) => void;
+}) {
   const reduce = useReducedMotion();
   const container = useRef<HTMLDivElement>(null);
   const tags = useRef<(HTMLSpanElement | null)[]>([]);
   const angle = useRef({ x: 0.3, y: 0, vx: 0.0011, vy: 0.0024 });
+  // Touch drag state (mobile only): horizontal drags spin the globe, vertical swipes scroll the page.
+  const drag = useRef<{ id: number; x: number; startX: number; moved: boolean } | null>(null);
   const inView = useInView(container, { margin: "100px" });
 
   const points = useMemo(() => {
@@ -118,11 +161,23 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
     if (!el || (!inView && el.dataset.ready)) return;
     el.dataset.ready = "1";
     const a = angle.current;
-    if (!reduce) {
+    if (mobile) {
+      // A finger drag drives rotation directly; once released, the flick
+      // eases back into the gentle default drift.
+      if (!drag.current && !reduce) {
+        a.x += a.vx;
+        a.y += a.vy;
+        a.vx += (0.0011 - a.vx) * 0.04;
+        a.vy += (0.0024 - a.vy) * 0.04;
+      }
+    } else if (!reduce) {
       a.x += a.vx;
       a.y += a.vy;
     }
-    const radius = el.clientWidth * 0.38;
+    const width = el.clientWidth;
+    const radius = width * (mobile ? 0.4 : 0.38);
+    // Read every tag width before writing, so labels can be kept inside the viewport on phones.
+    const widths = mobile ? tags.current.map((tag) => tag?.offsetWidth ?? 0) : null;
     const [sx, cx, sy, cy] = [Math.sin(a.x), Math.cos(a.x), Math.sin(a.y), Math.cos(a.y)];
     points.forEach((p, i) => {
       const tag = tags.current[i];
@@ -133,14 +188,44 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
       const y2 = p.y * cx - z1 * sx;
       const z2 = p.y * sx + z1 * cx;
       const depth = (z2 + 1) / 2; // 0 (back) .. 1 (front)
-      const scale = 0.55 + depth * 0.65;
-      tag.style.transform = `translate(-50%, -50%) translate3d(${x1 * radius}px, ${y2 * radius}px, 0) scale(${scale})`;
+      // Narrower scale range on phones keeps back labels legible and front ones from crowding.
+      const scale = mobile ? 0.72 + depth * 0.33 : 0.55 + depth * 0.65;
+      let x = x1 * radius;
+      if (widths) {
+        const limit = Math.max(0, width / 2 - (widths[i] * scale) / 2 - 2);
+        x = Math.max(-limit, Math.min(limit, x));
+      }
+      tag.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y2 * radius}px, 0) scale(${scale})`;
       tag.style.opacity = String(0.15 + depth * 0.85);
       tag.style.zIndex = String(Math.round(depth * 100));
     });
   });
 
+  function onPointerDown(e: React.PointerEvent) {
+    if (!mobile) return;
+    drag.current = { id: e.pointerId, x: e.clientX, startX: e.clientX, moved: false };
+  }
+
+  function onPointerUp(e: React.PointerEvent) {
+    const d = drag.current;
+    drag.current = null;
+    if (!mobile || !d || d.moved) return;
+    // A tap (not a drag) on a label highlights its whole group.
+    const key = (e.target as HTMLElement).closest<HTMLElement>("[data-group]")?.dataset.group;
+    if (key) onPick?.(key as SkillGroup["key"]);
+  }
+
   function onPointerMove(e: React.PointerEvent) {
+    if (mobile) {
+      const d = drag.current;
+      if (!d || d.id !== e.pointerId) return;
+      const dx = e.clientX - d.x;
+      d.x = e.clientX;
+      if (Math.abs(e.clientX - d.startX) > 6) d.moved = true;
+      angle.current.y += dx * 0.01;
+      angle.current.vy = reduce ? 0 : Math.max(-0.06, Math.min(0.06, dx * 0.01));
+      return;
+    }
     if (reduce || !container.current) return;
     const r = container.current.getBoundingClientRect();
     const dx = (e.clientX - r.left) / r.width - 0.5;
@@ -153,8 +238,13 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
     <div
       ref={container}
       onPointerMove={onPointerMove}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => (drag.current = null)}
+      onPointerLeave={() => (drag.current = null)}
       aria-hidden
-      className="relative mx-auto aspect-square w-full max-w-[560px] select-none"
+      className="relative mx-auto aspect-square w-full max-w-[560px] select-none max-md:w-[92%]"
+      style={mobile ? { touchAction: "pan-y" } : undefined}
     >
       {/* Orbit rings drawn in CSS 3D behind the cloud */}
       <div className="absolute inset-[6%]" style={{ perspective: 900 }}>
@@ -173,11 +263,12 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
         {points.map((p, i) => (
           <span
             key={p.label}
+            data-group={p.group}
             ref={(el) => {
               tags.current[i] = el;
             }}
             className={cn(
-              "absolute left-1/2 top-1/2 whitespace-nowrap rounded-full border px-3 py-1 font-mono text-xs transition-[color,border-color,background-color] duration-500 will-change-transform",
+              "absolute left-1/2 top-1/2 whitespace-nowrap rounded-full border px-3 py-1 font-mono text-xs transition-[color,border-color,background-color] duration-500 will-change-transform max-md:px-2.5",
               p.group === active
                 ? "bg-[var(--card)] font-semibold text-[var(--foreground)]"
                 : "border-transparent text-[var(--muted)]"
@@ -190,4 +281,16 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
       </div>
     </div>
   );
+}
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setMobile(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return mobile;
 }

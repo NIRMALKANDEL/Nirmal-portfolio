@@ -47,6 +47,7 @@ export const en = {
     tools: "Tools, AI & Workflow",
     timelineEyebrow: "Learning Path",
     timelineTitle: "Skills Timeline",
+    globeHint: "Drag to spin · tap a skill",
     timelineSubtitle: "How my skills grew — from first web pages to full-stack apps, AI integrations and building with Claude Code.",
   },
   projects: {
@@ -75,6 +76,9 @@ export const en = {
     stars: "stars",
     updated: "Updated",
     languages: "Languages (from GitHub)",
+    carouselPrev: "Previous project",
+    carouselNext: "Next project",
+    carouselGoTo: "Go to project",
     explore: "Explore",
     next: "Next Project",
     drag: "Hover to tilt",
