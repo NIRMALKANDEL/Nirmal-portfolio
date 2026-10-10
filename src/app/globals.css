@@ -53,6 +53,8 @@
   --animate-spin-slow: spin 18s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+  --animate-grid-scroll: grid-scroll 1.6s linear infinite;
+  --animate-pixel-rise: pixel-rise 20s linear infinite;
 }
 
 @keyframes marquee {
@@ -73,6 +75,33 @@
   50% {
     translate: 0 -14px;
     rotate: 2deg;
+  }
+}
+
+/* One grid cell per loop, so the scroll is seamless. */
+@keyframes grid-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(64px);
+  }
+}
+
+@keyframes pixel-rise {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-110vh) rotate(180deg);
+    opacity: 0;
   }
 }
 

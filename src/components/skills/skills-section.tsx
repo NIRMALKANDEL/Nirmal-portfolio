@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { motion, useAnimationFrame, useReducedMotion } from "motion/react";
+import { motion, useAnimationFrame, useInView, useReducedMotion } from "motion/react";
 import { Code2, Database, Server, Wrench } from "lucide-react";
 import { skillGroups, type SkillGroup } from "@/data/skills";
 import { useLanguage } from "@/context/language-context";
@@ -100,6 +100,7 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
   const container = useRef<HTMLDivElement>(null);
   const tags = useRef<(HTMLSpanElement | null)[]>([]);
   const angle = useRef({ x: 0.3, y: 0, vx: 0.0011, vy: 0.0024 });
+  const inView = useInView(container, { margin: "100px" });
 
   const points = useMemo(() => {
     const all = skillGroups.flatMap((g) => g.items.map((label) => ({ label, group: g.key })));
@@ -113,7 +114,9 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
 
   useAnimationFrame(() => {
     const el = container.current;
-    if (!el) return;
+    // Skip all work while off-screen (after the first layout pass).
+    if (!el || (!inView && el.dataset.ready)) return;
+    el.dataset.ready = "1";
     const a = angle.current;
     if (!reduce) {
       a.x += a.vx;
@@ -134,7 +137,6 @@ function SkillSphere({ active }: { active: SkillGroup["key"] }) {
       tag.style.transform = `translate(-50%, -50%) translate3d(${x1 * radius}px, ${y2 * radius}px, 0) scale(${scale})`;
       tag.style.opacity = String(0.15 + depth * 0.85);
       tag.style.zIndex = String(Math.round(depth * 100));
-      tag.style.filter = depth < 0.35 ? `blur(${(0.35 - depth) * 5}px)` : "none";
     });
   });
 

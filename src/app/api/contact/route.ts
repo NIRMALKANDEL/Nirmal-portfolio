@@ -8,6 +8,8 @@ type ContactPayload = {
   name?: unknown;
   email?: unknown;
   message?: unknown;
+  /** Honeypot field; real visitors never see it. */
+  website?: unknown;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,6 +25,12 @@ export async function POST(request: Request) {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const email = typeof body.email === "string" ? body.email.trim() : "";
   const message = typeof body.message === "string" ? body.message.trim() : "";
+
+  // Honeypot filled in: almost certainly a bot. Report success so it moves
+  // on, but don't send anything.
+  if (typeof body.website === "string" && body.website.trim() !== "") {
+    return NextResponse.json({ success: true });
+  }
 
   if (!name || name.length > 100) {
     return NextResponse.json({ error: "Please provide a valid name." }, { status: 400 });

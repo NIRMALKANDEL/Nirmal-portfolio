@@ -10,8 +10,8 @@ import type { ScenePalette, SceneVariant } from "./scenes";
 const Scene = dynamic(() => import("./scenes"), { ssr: false });
 
 const palettes: Record<"dark" | "light", ScenePalette> = {
-  dark: { primary: "#ff6b35", secondary: "#3de0c8", tertiary: "#8b7bff", particles: "#ffffff" },
-  light: { primary: "#d9480f", secondary: "#0d8a7b", tertiary: "#5b47e0", particles: "#5b47e0" },
+  dark: { primary: "#ff6b35", secondary: "#3de0c8", tertiary: "#8b7bff", particles: "#ffffff", surface: "#363846" },
+  light: { primary: "#d9480f", secondary: "#0d8a7b", tertiary: "#5b47e0", particles: "#5b47e0", surface: "#3a3b45" },
 };
 
 /**

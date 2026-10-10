@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar/navbar";
 import { Footer } from "@/components/footer/footer";
 import { CustomCursor } from "@/components/motion/custom-cursor";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
+import { StarfieldBackdrop } from "@/components/motion/starfield-backdrop";
 import "./globals.css";
 
 const inter = Inter({
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex min-h-full flex-col antialiased" suppressHydrationWarning>
         <Providers>
+          <StarfieldBackdrop />
           <ScrollProgress />
           <CustomCursor />
           <Navbar />

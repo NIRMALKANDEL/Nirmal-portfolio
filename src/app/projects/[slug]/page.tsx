@@ -25,7 +25,7 @@ export async function generateMetadata({
     openGraph: {
       title: project.title,
       description: project.tagline,
-      images: [project.image],
+      // Image comes from the colocated opengraph-image.tsx (PNG).
     },
   };
 }

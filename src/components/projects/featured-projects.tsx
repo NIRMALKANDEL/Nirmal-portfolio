@@ -86,14 +86,14 @@ function StackCard({
   const targetScale = 1 - (total - index - 1) * 0.05;
   const scale = useTransform(progress, [start, 1], [1, targetScale]);
   const rotateX = useTransform(progress, [start, 1], [0, index === total - 1 ? 0 : -8]);
-  const brightness = useTransform(progress, [start, 1], [1, index === total - 1 ? 1 : 0.55]);
-  const filter = useTransform(brightness, (b) => `brightness(${b})`);
+  // Same look as brightness(1 → 0.55), but opacity-only so it stays on the GPU.
+  const dim = useTransform(progress, [start, 1], [0, index === total - 1 ? 0 : 0.45]);
 
   return (
     <div className="relative pb-6 lg:sticky lg:top-28 lg:flex lg:h-[min(78vh,720px)] lg:items-start lg:pb-10" style={{ zIndex: index + 1 }}>
       <motion.div
         // The 3D deck only runs where the cards are sticky (lg+).
-        style={deck ? { scale, rotateX, filter, top: index * 18, transformOrigin: "50% 0%" } : undefined}
+        style={deck ? { scale, rotateX, top: index * 18, transformOrigin: "50% 0%" } : undefined}
         className="relative h-full w-full"
       >
         <TiltCard max={4} glow={project.theme.accent} className="rounded-[2rem]">
@@ -144,6 +144,13 @@ function StackCard({
             </div>
           </article>
         </TiltCard>
+        {deck && (
+          <motion.div
+            aria-hidden
+            style={{ opacity: dim }}
+            className="pointer-events-none absolute inset-0 z-30 rounded-[2rem] bg-black"
+          />
+        )}
       </motion.div>
     </div>
   );

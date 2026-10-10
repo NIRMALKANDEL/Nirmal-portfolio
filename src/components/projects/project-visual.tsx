@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  Bot,
   Check,
   Heart,
   MapPin,
@@ -253,41 +252,6 @@ function NetflixMock() {
   );
 }
 
-/* ------------------------------------------------------------- Nova AI -- */
-function NovaMock() {
-  return (
-    <>
-      <Layer z={10} className="left-[6%] top-[10%] h-[80%] w-[20%] space-y-1.5 rounded-xl border border-white/10 bg-black/40 p-2">
-        <div className="rounded-md bg-[var(--p)]/30 px-1.5 py-1 text-[8px] text-white">+ New chat</div>
-        {["Explain JWT", "Regex help", "React hooks"].map((c) => (
-          <div key={c} className="truncate rounded-md bg-white/5 px-1.5 py-1 text-[8px] text-white/60">
-            {c}
-          </div>
-        ))}
-      </Layer>
-      <Layer z={50} className="right-[8%] top-[12%] max-w-[50%] rounded-2xl rounded-br-sm bg-blue-600 px-3 py-2 text-[10px] text-white shadow-xl">
-        How do I debounce a search input?
-      </Layer>
-      <Layer z={80} className={cn(glass, "left-[30%] top-[36%] w-[60%] p-2.5")}>
-        <p className="flex items-center gap-1.5 text-[9px] font-semibold text-white">
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--p)]">
-            <Bot size={10} />
-          </span>
-          Nova AI
-        </p>
-        <pre className="mt-1.5 overflow-hidden rounded-md bg-black/60 p-2 font-mono text-[8px] leading-relaxed text-white/80">
-          <span className="text-[var(--p)]">const</span> id = setTimeout(search, <span className="text-amber-300">300</span>);
-        </pre>
-      </Layer>
-      <Layer z={110} className={cn(glass, "bottom-[12%] left-[34%] flex gap-1 px-3 py-2")}>
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--p)]" style={{ animationDelay: `${i * 120}ms` }} />
-        ))}
-      </Layer>
-    </>
-  );
-}
-
 /* ------------------------------------------------------- Brightway Solar -- */
 function SolarMock() {
   return (
@@ -405,7 +369,6 @@ const MOCKS: Record<string, () => React.ReactElement> = {
   devtinder: DevTinderMock,
   nibblr: NibblrMock,
   "netflix-gpt": NetflixMock,
-  "nova-ai": NovaMock,
   "brightway-solar": SolarMock,
   "nextjs-video-app": VideoMock,
   "mern-todo": TodoMock,

@@ -15,7 +15,7 @@ export function Marquee({
   return (
     <div className={cn("group flex overflow-hidden mask-fade-x", className)}>
       <div
-        className="flex w-max shrink-0 animate-marquee items-center group-hover:[animation-play-state:paused]"
+        className="flex w-max shrink-0 animate-marquee items-center will-change-transform group-hover:[animation-play-state:paused]"
         style={
           {
             "--marquee-duration": `${duration}s`,

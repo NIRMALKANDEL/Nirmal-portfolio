@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
+import { ArcadeBackdrop } from "@/components/beyond-code/arcade-backdrop";
 
 const ICONS = [<Trophy key="t" size={20} />, <Gamepad2 key="g" size={20} />, <Smartphone key="s" size={20} />, <Megaphone key="m" size={20} />];
 const COLORS = ["#f5b83d", "var(--accent)", "var(--accent-3)", "var(--accent-2)"];
@@ -16,7 +17,8 @@ export function NonTechContent() {
 
   return (
     <>
-      <PageHeader eyebrow={t.beyondCode.eyebrow} title={t.beyondCode.title} subtitle={t.beyondCode.subtitle} scene="rings">
+      <ArcadeBackdrop />
+      <PageHeader eyebrow={t.beyondCode.eyebrow} title={t.beyondCode.title} subtitle={t.beyondCode.subtitle} scene="gaming">
         <p className="mt-4 max-w-2xl text-sm text-[var(--muted)]">{t.beyondCode.description}</p>
       </PageHeader>
 

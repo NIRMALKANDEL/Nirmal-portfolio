@@ -23,6 +23,7 @@ export function ContactForm() {
       name: formData.get("name"),
       email: formData.get("email"),
       message: formData.get("message"),
+      website: formData.get("website"),
     };
 
     try {
@@ -49,6 +50,11 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+      {/* Honeypot: hidden from people and screen readers; bots tend to fill every field. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="flex flex-col gap-1.5">
         <label htmlFor="name" className="text-sm font-medium text-[var(--foreground)]">
           {t.contact.name}

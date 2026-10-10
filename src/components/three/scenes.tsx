@@ -8,15 +8,19 @@ import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
+import { WorkstationRig } from "./workstation";
+import { ArcadeRig } from "./arcade";
 
 export type ScenePalette = {
   primary: string;
   secondary: string;
   tertiary: string;
   particles: string;
+  /** Body colour for hardware (laptop, controller). */
+  surface: string;
 };
 
-export type SceneVariant = "hero" | "knot" | "rings";
+export type SceneVariant = "hero" | "knot" | "rings" | "gaming";
 
 type SceneProps = {
   variant: SceneVariant;
@@ -40,9 +44,16 @@ export default function Scene({ variant, palette, active, reduced, compact }: Sc
       <directionalLight position={[4, 6, 5]} intensity={1.6} />
       <pointLight position={[-5, -2, 3]} intensity={40} color={palette.secondary} />
       <pointLight position={[5, 3, -2]} intensity={40} color={palette.tertiary} />
-      {variant === "hero" && <HeroRig palette={palette} compact={compact} />}
+      {variant === "hero" && (
+        <>
+          <WorkstationRig palette={palette} compact={compact} />
+          <Sparkles count={compact ? 50 : 130} scale={[12, 7, 6]} size={2.2} speed={0.45} opacity={0.7} color={palette.particles} />
+          <StarField count={compact ? 400 : 900} color={palette.particles} />
+        </>
+      )}
       {variant === "knot" && <KnotRig palette={palette} />}
       {variant === "rings" && <RingsRig palette={palette} />}
+      {variant === "gaming" && <ArcadeRig palette={palette} compact={compact} />}
     </Canvas>
   );
 }
@@ -59,128 +70,7 @@ function usePointerParallax(strength = 0.35) {
   return ref;
 }
 
-/* ------------------------------------------------------------------ hero -- */
-
-function HeroRig({ palette, compact }: { palette: ScenePalette; compact: boolean }) {
-  const group = usePointerParallax(0.45);
-  const core = useRef<THREE.Mesh>(null);
-  const shell = useRef<THREE.Mesh>(null);
-  const scrollGroup = useRef<THREE.Group>(null);
-
-  useFrame((state, delta) => {
-    if (core.current) {
-      core.current.rotation.y += delta * 0.18;
-      core.current.rotation.z += delta * 0.05;
-    }
-    if (shell.current) {
-      shell.current.rotation.y -= delta * 0.08;
-      shell.current.rotation.x += delta * 0.04;
-    }
-    // Scroll drives the scene: it sinks, shrinks and spins as you leave the hero.
-    if (scrollGroup.current) {
-      const p = Math.min(window.scrollY / window.innerHeight, 1.2);
-      scrollGroup.current.position.y = THREE.MathUtils.lerp(scrollGroup.current.position.y, -p * 2.2, 0.1);
-      scrollGroup.current.rotation.z = THREE.MathUtils.lerp(scrollGroup.current.rotation.z, p * 0.9, 0.1);
-      const s = 1 - p * 0.35;
-      scrollGroup.current.scale.setScalar(THREE.MathUtils.lerp(scrollGroup.current.scale.x, s, 0.1));
-    }
-    state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, state.pointer.x * 0.6, 0.04);
-  });
-
-  return (
-    <group ref={scrollGroup} position={[compact ? 0.9 : 1.9, compact ? 1.9 : 0, compact ? -1 : 0]}>
-      <group ref={group}>
-        <Float speed={1.6} rotationIntensity={0.6} floatIntensity={1.2}>
-          <mesh ref={core} scale={compact ? 1.05 : 1.45}>
-            <icosahedronGeometry args={[1, 24]} />
-            <MeshDistortMaterial
-              color={palette.primary}
-              roughness={0.18}
-              metalness={0.25}
-              emissive={palette.primary}
-              emissiveIntensity={0.18}
-              distort={0.42}
-              speed={1.8}
-            />
-          </mesh>
-          <mesh ref={shell} scale={compact ? 1.55 : 2.15}>
-            <icosahedronGeometry args={[1, 1]} />
-            <meshBasicMaterial color={palette.tertiary} wireframe transparent opacity={0.22} />
-          </mesh>
-        </Float>
-
-        <OrbitRing radius={compact ? 2 : 2.7} tilt={[1.2, 0.2, 0]} speed={0.35} color={palette.secondary} />
-        <OrbitRing radius={compact ? 2.3 : 3.1} tilt={[1.75, -0.5, 0.3]} speed={-0.22} color={palette.tertiary} />
-
-        {!compact &&
-          SATELLITES.map((s, i) => (
-            <Float key={i} speed={2 + i * 0.3} rotationIntensity={2} floatIntensity={2}>
-              <mesh position={s.position} scale={s.scale}>
-                {s.shape === "oct" && <octahedronGeometry args={[1, 0]} />}
-                {s.shape === "box" && <boxGeometry args={[1, 1, 1]} />}
-                {s.shape === "tet" && <tetrahedronGeometry args={[1, 0]} />}
-                <meshStandardMaterial
-                  color={i % 2 ? palette.secondary : palette.tertiary}
-                  metalness={0.6}
-                  roughness={0.25}
-                  flatShading
-                />
-              </mesh>
-            </Float>
-          ))}
-      </group>
-      <Sparkles
-        count={compact ? 50 : 120}
-        scale={[10, 7, 6]}
-        size={2.2}
-        speed={0.35}
-        opacity={0.7}
-        color={palette.particles}
-      />
-      <StarField count={compact ? 400 : 900} color={palette.particles} />
-    </group>
-  );
-}
-
-const SATELLITES: { position: [number, number, number]; scale: number; shape: "oct" | "box" | "tet" }[] = [
-  { position: [-2.6, 1.6, -0.5], scale: 0.22, shape: "oct" },
-  { position: [2.7, -1.5, 0.4], scale: 0.2, shape: "box" },
-  { position: [-2.2, -1.9, 0.8], scale: 0.18, shape: "tet" },
-  { position: [2.2, 2, -1], scale: 0.16, shape: "tet" },
-  { position: [0.3, -2.6, -0.6], scale: 0.14, shape: "oct" },
-];
-
-/** A thin glowing ring with a small moon riding along it. */
-function OrbitRing({
-  radius,
-  tilt,
-  speed,
-  color,
-}: {
-  radius: number;
-  tilt: [number, number, number];
-  speed: number;
-  color: string;
-}) {
-  const pivot = useRef<THREE.Group>(null);
-  useFrame((_, delta) => {
-    if (pivot.current) pivot.current.rotation.z += delta * speed;
-  });
-  return (
-    <group rotation={tilt}>
-      <mesh>
-        <torusGeometry args={[radius, 0.012, 16, 160]} />
-        <meshBasicMaterial color={color} transparent opacity={0.55} />
-      </mesh>
-      <group ref={pivot}>
-        <mesh position={[radius, 0, 0]}>
-          <sphereGeometry args={[0.07, 24, 24]} />
-          <meshBasicMaterial color={color} />
-        </mesh>
-      </group>
-    </group>
-  );
-}
+/* ------------------------------------------------------------ backdrop -- */
 
 /** A slowly drifting shell of points behind everything. */
 function StarField({ count, color }: { count: number; color: string }) {

@@ -15,16 +15,16 @@ export default function OgImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "80px",
-          background: "#0c0d0b",
-          color: "#f2f2ee",
+          background: "linear-gradient(135deg, #1a0d08 0%, #05050a 60%, #120d26 100%)",
+          color: "#f4f2ec",
           fontFamily: "Arial, Helvetica, sans-serif",
         }}
       >
-        <div style={{ fontSize: 28, color: "#e08a63", fontWeight: 700, letterSpacing: 2 }}>
+        <div style={{ fontSize: 28, color: "#ff6b35", fontWeight: 700, letterSpacing: 2 }}>
           {site.role.toUpperCase()}
         </div>
         <div style={{ fontSize: 76, fontWeight: 800, marginTop: 20 }}>{site.name}</div>
-        <div style={{ fontSize: 30, color: "#9a9c92", marginTop: 24, maxWidth: 900 }}>
+        <div style={{ fontSize: 30, color: "#9c9aa8", marginTop: 24, maxWidth: 900 }}>
           {site.tagline}
         </div>
       </div>
