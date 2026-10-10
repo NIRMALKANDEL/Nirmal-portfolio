@@ -60,7 +60,7 @@ export function ContactForm() {
           required
           maxLength={100}
           disabled={status === "sending"}
-          className="h-11 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 text-sm text-[var(--foreground)] outline-none transition-colors focus:border-[var(--accent)] disabled:opacity-60"
+          className="h-12 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm text-[var(--foreground)] outline-none transition-[border-color,box-shadow] focus:border-[var(--accent)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent)_18%,transparent)] disabled:opacity-60"
         />
       </div>
 
@@ -75,7 +75,7 @@ export function ContactForm() {
           required
           maxLength={200}
           disabled={status === "sending"}
-          className="h-11 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 text-sm text-[var(--foreground)] outline-none transition-colors focus:border-[var(--accent)] disabled:opacity-60"
+          className="h-12 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm text-[var(--foreground)] outline-none transition-[border-color,box-shadow] focus:border-[var(--accent)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent)_18%,transparent)] disabled:opacity-60"
         />
       </div>
 
@@ -91,11 +91,11 @@ export function ContactForm() {
           maxLength={5000}
           rows={5}
           disabled={status === "sending"}
-          className="resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors focus:border-[var(--accent)] disabled:opacity-60"
+          className="resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-[border-color,box-shadow] focus:border-[var(--accent)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent)_18%,transparent)] disabled:opacity-60"
         />
       </div>
 
-      <Button type="submit" disabled={status === "sending"} className="w-fit">
+      <Button type="submit" disabled={status === "sending"} className="group h-12 w-fit px-7">
         {status === "sending" ? (
           <>
             <Loader2 size={16} className="animate-spin" />

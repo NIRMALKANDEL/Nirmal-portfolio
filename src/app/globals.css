@@ -3,44 +3,35 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f7f4ee;
-  --surface: #efe9dd;
-  --card: #ffffff;
-  --foreground: #17170f;
-  --muted: #6b6a5b;
-  --border: #e3ddcd;
-  --accent: #c2410c;
-  --accent-2: #0f766e;
+  --background: #f3efe6;
+  --surface: #e9e3d6;
+  --card: #fbf9f4;
+  --foreground: #0e0e13;
+  --muted: #5a5866;
+  --border: #d9d1c0;
+  --accent: #d9480f;
+  --accent-2: #0d8a7b;
+  --accent-3: #5b47e0;
   --accent-foreground: #ffffff;
-  --ring: #c2410c;
-  --shadow-card: 0 1px 1px rgba(30, 25, 15, 0.04), 0 16px 32px -18px rgba(30, 25, 15, 0.22);
-  --shadow-card-hover: 0 2px 2px rgba(30, 25, 15, 0.05), 0 22px 40px -16px rgba(30, 25, 15, 0.28);
-  --body-bg-image: radial-gradient(
-      55% 45% at 12% -5%,
-      color-mix(in srgb, var(--accent) 16%, transparent),
-      transparent 65%
-    ),
-    radial-gradient(
-      45% 40% at 100% 15%,
-      color-mix(in srgb, var(--accent-2) 14%, transparent),
-      transparent 65%
-    );
+  --ring: #d9480f;
+  --grid-line: rgba(14, 14, 19, 0.06);
+  --glass: rgba(251, 249, 244, 0.72);
 }
 
 .dark {
-  --background: #0c0d0b;
-  --surface: #131410;
-  --card: #171813;
-  --foreground: #f2f2ee;
-  --muted: #9a9c92;
-  --border: #26271f;
-  --accent: #e08a63;
-  --accent-2: #4fb8ab;
-  --accent-foreground: #12130f;
-  --ring: #e08a63;
-  --shadow-card: none;
-  --shadow-card-hover: none;
-  --body-bg-image: none;
+  --background: #05050a;
+  --surface: #0c0c13;
+  --card: #0f0f18;
+  --foreground: #f4f2ec;
+  --muted: #9c9aa8;
+  --border: #1f1f2c;
+  --accent: #ff6b35;
+  --accent-2: #3de0c8;
+  --accent-3: #8b7bff;
+  --accent-foreground: #0b0b10;
+  --ring: #ff6b35;
+  --grid-line: rgba(255, 255, 255, 0.045);
+  --glass: rgba(10, 10, 16, 0.6);
 }
 
 @theme inline {
@@ -52,52 +43,114 @@
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
   --color-accent-foreground: var(--accent-foreground);
   --color-ring: var(--ring);
   --font-sans: var(--font-inter);
-  --animate-fade-up: fade-up 0.6s ease-out both;
-  --animate-fade-in: fade-in 0.6s ease-out both;
+  --font-display: var(--font-grotesk);
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
 }
 
-@keyframes fade-up {
+@keyframes marquee {
   from {
-    opacity: 0;
-    transform: translateY(16px);
+    transform: translateX(0);
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%);
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
   }
-  to {
-    opacity: 1;
+  50% {
+    translate: 0 -14px;
+    rotate: 2deg;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
   }
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
   background-color: var(--background);
-  background-image: var(--body-bg-image);
-  background-attachment: fixed;
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: clip;
 }
 
-.card-elevated {
-  box-shadow: var(--shadow-card);
-  transition: box-shadow 0.25s ease;
+/* Film grain over everything — gives flat gradients some texture. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-.card-elevated:hover {
-  box-shadow: var(--shadow-card-hover);
+.font-display {
+  font-family: var(--font-grotesk), var(--font-inter), system-ui, sans-serif;
+}
+
+/* Faint blueprint grid used behind sections. */
+.bg-grid {
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.mask-fade-y {
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+.mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.mask-radial {
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--foreground) 35%, transparent);
+  color: transparent;
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-3) 50%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
 
 section[id] {
@@ -107,6 +160,18 @@ section[id] {
 ::selection {
   background: var(--accent);
   color: var(--accent-foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+/* Hide the native cursor only when the custom one is active (fine pointers). */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button {
+  cursor: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -9,12 +9,13 @@ type BaseProps = {
 };
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-[var(--background)] disabled:pointer-events-none disabled:opacity-50";
+  "relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-300 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-[var(--background)] disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<NonNullable<BaseProps["variant"]>, string> = {
-  primary: "bg-[var(--accent)] text-[var(--accent-foreground)] hover:opacity-90",
+  primary:
+    "bg-[var(--accent)] text-[var(--accent-foreground)] shadow-[0_10px_40px_-10px_var(--accent)] hover:shadow-[0_14px_50px_-8px_var(--accent)] before:absolute before:inset-y-0 before:-left-1/2 before:w-1/3 before:-skew-x-12 before:bg-white/30 before:transition-[left] before:duration-700 hover:before:left-[130%]",
   secondary:
-    "border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--accent)] hover:text-[var(--accent)]",
+    "border border-[var(--border)] bg-[var(--glass)] text-[var(--foreground)] backdrop-blur hover:border-[var(--accent)] hover:text-[var(--accent)]",
   ghost: "text-[var(--foreground)] hover:text-[var(--accent)]",
 };
 

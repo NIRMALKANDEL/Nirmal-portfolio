@@ -1,6 +1,4 @@
-import type { Translations } from "./types";
-
-export const en: Translations = {
+export const en = {
   nav: {
     home: "Home",
     about: "About",
@@ -20,7 +18,25 @@ export const en: Translations = {
     viewProjects: "View Projects",
     github: "GitHub",
     linkedin: "LinkedIn",
-    resume: "Download Resume",
+    resume: "Resume",
+    available: "Open to full-time roles",
+    roles: [
+      "Full Stack / MERN Developer",
+      "React & Next.js Engineer",
+      "Building with Claude Code",
+      "Shipping AI-powered apps",
+    ],
+    basedIn: "Based in",
+    scroll: "Scroll to explore",
+  },
+  intro: {
+    eyebrow: "In short",
+    statement:
+      "I turn ideas into complete, working products — auth, APIs, databases and interfaces that feel good on a phone and a laptop alike.",
+    projects: "Projects shipped",
+    repos: "Public repos",
+    experience: "Roles in industry",
+    live: "Live on GitHub",
   },
   skills: {
     title: "Skills",
@@ -53,6 +69,15 @@ export const en: Translations = {
     technologies: "Technologies",
     overview: "Overview",
     backToProjects: "Back to Projects",
+    implementation: "Technical Implementation",
+    problem: "The Challenge",
+    all: "All",
+    stars: "stars",
+    updated: "Updated",
+    languages: "Languages (from GitHub)",
+    explore: "Explore",
+    next: "Next Project",
+    drag: "Hover to tilt",
   },
   experience: {
     eyebrow: "Career",
@@ -61,6 +86,8 @@ export const en: Translations = {
     viewAll: "View Full Experience",
     present: "Present",
     nonEngineering: "Non-engineering role",
+    journeyEyebrow: "Journey",
+    journeyTitle: "From first page to production",
   },
   education: {
     eyebrow: "Background",
@@ -90,6 +117,11 @@ export const en: Translations = {
     success: "Thanks — your message has been sent. I'll get back to you soon.",
     error: "Something went wrong. Please try again or email me directly.",
     directly: "Or reach out directly",
+    ctaEyebrow: "What's next?",
+    ctaTitle: "Let's build something",
+    ctaHighlight: "remarkable.",
+    ctaBody: "Open to full-time roles and freelance work. My inbox is always open.",
+    ctaButton: "Start a conversation",
   },
   footer: {
     tagline: "Full Stack / MERN Stack Developer",

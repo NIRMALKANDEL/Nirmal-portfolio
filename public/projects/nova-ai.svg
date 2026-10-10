@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#100a24"/>
+      <stop offset="100%" stop-color="#2a1660"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#glow)"/>
+  <g opacity="0.18">
+    <rect x="700" y="120" width="380" height="70" rx="20" fill="#ffffff"/>
+    <rect x="620" y="220" width="460" height="120" rx="20" fill="#ffffff"/>
+    <rect x="780" y="370" width="300" height="70" rx="20" fill="#ffffff"/>
+    <rect x="620" y="470" width="460" height="90" rx="20" fill="#ffffff"/>
+  </g>
+  <text x="80" y="220" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="1">Nova AI</text>
+  <text x="80" y="270" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#d4c6ff">React &#183; Express 5 &#183; Groq &#183; Llama 3.3 70B</text>
+  <rect x="80" y="320" width="230" height="52" rx="26" fill="#8b5cf6"/>
+  <text x="112" y="354" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#ffffff">AI Chat Assistant</text>
+</svg>

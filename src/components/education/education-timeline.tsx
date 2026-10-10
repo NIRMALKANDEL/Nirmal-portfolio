@@ -1,66 +1,64 @@
 "use client";
 
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, School } from "lucide-react";
 import { education } from "@/data/education";
 import { useLanguage } from "@/context/language-context";
 import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/page-header";
+import { Reveal } from "@/components/motion/reveal";
+import { TiltCard } from "@/components/motion/tilt-card";
 
 export function EducationTimeline() {
   const { t } = useLanguage();
+  const primary = education.filter((e) => e.level === "primary");
+  const secondary = education.filter((e) => e.level === "secondary");
 
   return (
-    <Container className="py-16 sm:py-20">
-      <SectionHeading eyebrow={t.education.eyebrow} title={t.education.title} subtitle={t.education.subtitle} />
+    <>
+      <PageHeader eyebrow={t.education.eyebrow} title={t.education.title} subtitle={t.education.subtitle} scene="knot" />
 
-      <div className="mt-10 flex flex-col gap-5">
-        {education.map((item) => {
-          const isPrimary = item.level === "primary";
-          return (
-            <div
-              key={item.institution + item.degree}
-              className={cn(
-                "flex flex-col gap-3 rounded-2xl border p-6 sm:flex-row sm:items-start",
-                isPrimary
-                  ? "border-[var(--accent)] bg-[var(--card)] card-elevated"
-                  : "border-[var(--border)] bg-[var(--surface)]"
-              )}
-            >
-              <span
-                className={cn(
-                  "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
-                  isPrimary
-                    ? "bg-[color-mix(in_srgb,var(--accent)_18%,transparent)] text-[var(--accent)]"
-                    : "bg-[var(--card)] text-[var(--muted)]"
+      <Container className="flex flex-col gap-6 pb-24">
+        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]">{t.education.primaryLabel}</span>
+        {primary.map((item) => (
+          <Reveal key={item.degree} tilt>
+            <TiltCard max={5} className="rounded-[2rem]">
+              <div className="relative overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-8 sm:p-12">
+                <div aria-hidden className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[var(--accent-3)] opacity-20 blur-3xl" />
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--accent)] text-[var(--accent-foreground)]">
+                  <GraduationCap size={26} />
+                </span>
+                {item.duration && (
+                  <p className="mt-8 font-mono text-xs uppercase tracking-[0.18em] text-[var(--muted)]">{item.duration}</p>
                 )}
-              >
-                <GraduationCap size={isPrimary ? 22 : 18} />
-              </span>
-              <div className="flex flex-1 flex-col gap-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3
-                    className={cn(
-                      "font-semibold text-[var(--foreground)]",
-                      isPrimary ? "text-lg" : "text-base"
-                    )}
-                  >
-                    {item.degree}
-                  </h3>
-                  <Badge>{isPrimary ? t.education.primaryLabel : t.education.supportingLabel}</Badge>
-                </div>
-                <p className="text-sm text-[var(--muted)]">{item.institution}</p>
-                {(item.university || item.duration) && (
-                  <p className="text-xs text-[var(--muted)]">
-                    {[item.university, item.duration].filter(Boolean).join(" · ")}
-                  </p>
-                )}
+                <h2 className="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-[var(--foreground)] sm:text-5xl">
+                  {item.degree}
+                </h2>
+                <p className="mt-4 text-base text-[var(--muted)]">{item.institution}</p>
+                {item.university && <p className="mt-1 text-sm text-[var(--muted)]">{item.university}</p>}
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </Container>
+            </TiltCard>
+          </Reveal>
+        ))}
+
+        <span className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted)]">{t.education.supportingLabel}</span>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {secondary.map((item, i) => (
+            <Reveal key={item.degree} tilt delay={i * 0.1}>
+              <TiltCard max={7} glow="var(--accent-2)" className="rounded-3xl">
+                <div className="flex h-full items-center gap-4 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] text-[var(--accent-2)]">
+                    <School size={18} />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-lg font-bold text-[var(--foreground)]">{item.degree}</h3>
+                    <p className="text-sm text-[var(--muted)]">{item.institution}</p>
+                  </div>
+                </div>
+              </TiltCard>
+            </Reveal>
+          ))}
+        </div>
+      </Container>
+    </>
   );
 }

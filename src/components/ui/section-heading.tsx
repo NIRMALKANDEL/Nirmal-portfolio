@@ -1,4 +1,8 @@
+"use client";
+
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { SplitText } from "@/components/motion/split-text";
 
 export function SectionHeading({
   eyebrow,
@@ -6,31 +10,49 @@ export function SectionHeading({
   subtitle,
   align = "left",
   className,
+  as = "h2",
 }: {
   eyebrow?: string;
   title: string;
   subtitle?: string;
   align?: "left" | "center";
   className?: string;
+  as?: "h1" | "h2";
 }) {
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-3",
-        align === "center" && "items-center text-center",
-        className
-      )}
-    >
+    <div className={cn("flex flex-col gap-4", align === "center" && "items-center text-center", className)}>
       {eyebrow && (
-        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+        <motion.span
+          initial={{ opacity: 0, x: -12 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]"
+        >
+          <span className="h-px w-8 bg-[var(--accent)]" />
           {eyebrow}
-        </span>
+        </motion.span>
       )}
-      <h2 className="text-2xl font-semibold tracking-tight text-[var(--foreground)] sm:text-3xl">
-        {title}
-      </h2>
+      <SplitText
+        as={as}
+        text={title}
+        inView
+        stagger={0.025}
+        className={cn(
+          "font-display font-bold tracking-[-0.03em] text-[var(--foreground)]",
+          as === "h1" ? "text-[clamp(2.8rem,8vw,6.5rem)] leading-[0.92]" : "text-[clamp(2.2rem,5.5vw,4.2rem)] leading-[0.95]"
+        )}
+      />
       {subtitle && (
-        <p className="max-w-2xl text-[15px] text-[var(--muted)]">{subtitle}</p>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="max-w-2xl text-base text-[var(--muted)]"
+        >
+          {subtitle}
+        </motion.p>
       )}
     </div>
   );

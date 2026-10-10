@@ -5,6 +5,13 @@ export type ProjectLinks = {
   live?: string;
 };
 
+export type ProjectTheme = {
+  /** Brand colour taken from the project's own UI / preview art. */
+  accent: string;
+  /** Deep background tone for the card's 3D scene. */
+  deep: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -20,6 +27,7 @@ export type Project = {
   builtWithClaude?: boolean;
   category: "Full Stack / Mobile" | "AI / Full Stack" | "Full Stack" | "Full Stack CRUD" | "Frontend";
   image: string;
+  theme: ProjectTheme;
 };
 
 // Content verified directly against github.com/NIRMALKANDEL repositories
@@ -74,6 +82,7 @@ export const projects: Project[] = [
     builtWithClaude: true,
     category: "Full Stack / Mobile",
     image: "/projects/paylog.svg",
+    theme: { accent: "#e8a33d", deep: "#062b27" },
   },
   {
     slug: "devtinder",
@@ -117,6 +126,7 @@ export const projects: Project[] = [
     featured: true,
     category: "Full Stack",
     image: "/projects/devtinder.svg",
+    theme: { accent: "#2dd4bf", deep: "#0a1424" },
   },
   {
     slug: "nibblr",
@@ -159,6 +169,7 @@ export const projects: Project[] = [
     featured: true,
     category: "Frontend",
     image: "/projects/nibblr.svg",
+    theme: { accent: "#f97316", deep: "#1f1206" },
   },
   {
     slug: "netflix-gpt",
@@ -198,6 +209,48 @@ export const projects: Project[] = [
     featured: true,
     category: "AI / Full Stack",
     image: "/projects/netflix-gpt.svg",
+    theme: { accent: "#e50914", deep: "#1a0a0a" },
+  },
+  {
+    slug: "nova-ai",
+    title: "Nova AI",
+    tagline: "A ChatGPT-style AI assistant running Llama 3.3 70B through Groq",
+    description: "An AI chat assistant with a ChatGPT-style interface. The React + Vite client keeps multiple conversations in localStorage — start, rename and delete chats from a collapsible sidebar — and renders replies as Markdown with syntax-highlighted, copyable code blocks. A separate Express 5 backend forwards each message to Llama 3.3 70B through the Groq SDK, so the API key never reaches the browser.",
+    problem: "Build a real AI product end-to-end: a chat UI that feels familiar, conversation history that survives reloads, and a backend that keeps the model API key off the client.",
+    technologies: [
+      "React 19",
+      "Vite",
+      "Tailwind CSS",
+      "Framer Motion",
+      "React Markdown",
+      "Axios",
+      "Node.js",
+      "Express 5",
+      "Groq SDK",
+      "Llama 3.3 70B",
+    ],
+    features: [
+      "Multiple conversations with new chat, rename and delete",
+      "Chat history persisted to localStorage via a custom useLocalStorage hook",
+      "Markdown replies with Prism syntax highlighting and a copy button on code",
+      "Typing indicator, empty state and toast notifications",
+      "Collapsible sidebar for a focused chat view",
+    ],
+    implementation: [
+      "Client (React + Vite) keeps all chat logic in a useChat hook: chats, active chat, sending, and auto-titling a new chat from its first message.",
+      "Express 5 server exposes POST /api/chat; a controller passes the message to a service that calls Groq's chat completions API with the llama-3.3-70b-versatile model.",
+      "The Groq API key is read from environment variables on the server only.",
+      "Frontend deployed on Vercel; backend deployed on Render.",
+    ],
+    links: {
+      github: "https://github.com/NIRMALKANDEL/Nova-AI",
+      live: "https://nova-ai-kappa-one.vercel.app",
+    },
+    status: "live",
+    featured: false,
+    category: "AI / Full Stack",
+    image: "/projects/nova-ai.svg",
+    theme: { accent: "#8b5cf6", deep: "#100a24" },
   },
   {
     slug: "brightway-solar",
@@ -238,6 +291,7 @@ export const projects: Project[] = [
     featured: false,
     category: "Full Stack",
     image: "/projects/brightway-solar.svg",
+    theme: { accent: "#f59e0b", deep: "#0a1428" },
   },
   {
     slug: "nextjs-video-app",
@@ -276,6 +330,7 @@ export const projects: Project[] = [
     featured: false,
     category: "Full Stack",
     image: "/projects/nextjs-video-app.svg",
+    theme: { accent: "#14b8a6", deep: "#061a1a" },
   },
   {
     slug: "mern-todo",
@@ -301,11 +356,19 @@ export const projects: Project[] = [
     featured: false,
     category: "Full Stack CRUD",
     image: "/projects/mern-todo.svg",
+    theme: { accent: "#34d399", deep: "#08140f" },
   },
 ];
 
 export function getProjectBySlug(slug: string) {
   return projects.find((p) => p.slug === slug);
+}
+
+/** Every GitHub repo linked from a project, as "owner/name". */
+export function getProjectRepos(project: Project): string[] {
+  return [project.links.github, project.links.githubFrontend, project.links.githubBackend]
+    .filter((url): url is string => Boolean(url))
+    .map((url) => url.replace("https://github.com/", ""));
 }
 
 export function getFeaturedProjects() {
