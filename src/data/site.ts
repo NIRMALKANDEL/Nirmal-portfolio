@@ -8,7 +8,7 @@ export const site = {
   whatsappLink: "https://wa.me/918349692155",
   github: "https://github.com/NIRMALKANDEL",
   githubRepos: "https://github.com/NIRMALKANDEL?tab=repositories",
-  linkedin: "https://www.linkedin.com/in/nirmal-kandel",
+  linkedin: "https://www.linkedin.com/in/nirmal-kandel-36b4601b9",
   resumeUrl: "/resume.pdf",
   siteUrl: "https://nirmal-portfolio-eta.vercel.app",
   tagline:

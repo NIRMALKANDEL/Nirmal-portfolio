@@ -120,7 +120,7 @@ export const projects: Project[] = [
     links: {
       githubFrontend: "https://github.com/NIRMALKANDEL/devTinder-web",
       githubBackend: "https://github.com/NIRMALKANDEL/devTinder",
-      live: "http://13.51.194.164",
+      live: "https://www.projectdev.in",
     },
     status: "live",
     featured: true,
