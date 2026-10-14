@@ -356,6 +356,52 @@ function TodoMock() {
   );
 }
 
+/* -------------------------------------------------------------- WebPitch -- */
+function WebPitchMock() {
+  return (
+    <>
+      <Layer z={15} className="left-[8%] top-[10%] h-[70%] w-[62%] overflow-hidden rounded-xl border border-white/10 bg-black/50 shadow-2xl">
+        <div className="flex items-center gap-1 border-b border-white/10 px-2 py-1.5">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="h-1.5 w-1.5 rounded-full bg-white/25" />
+          ))}
+          <span className="ml-2 truncate rounded bg-white/5 px-2 py-0.5 text-[8px] text-white/50">/demos/restaurant</span>
+        </div>
+        <div className="h-[46%] bg-gradient-to-br from-[var(--p)]/60 to-fuchsia-500/30 p-3">
+          <p className="text-[8px] uppercase tracking-widest text-white/60">Concept demo</p>
+          <p className="font-display text-sm font-bold text-white">Tamarind & Smoke</p>
+        </div>
+        <div className="grid grid-cols-3 gap-1.5 p-2">
+          {["Menu", "Book", "Order"].map((label) => (
+            <div key={label} className="rounded-md bg-white/5 px-1.5 py-2 text-center text-[8px] text-white/70">
+              {label}
+            </div>
+          ))}
+        </div>
+      </Layer>
+      <Layer z={60} className={cn(glass, "right-[6%] top-[16%] w-[34%] p-2.5")}>
+        <p className="text-[9px] uppercase tracking-widest text-white/50">Industries</p>
+        <div className="mt-1.5 flex flex-wrap gap-1">
+          {["Salon", "Dental", "Fashion"].map((s) => (
+            <span key={s} className="rounded-full bg-white/10 px-1.5 py-0.5 text-[8px] text-white/80">
+              {s}
+            </span>
+          ))}
+        </div>
+        <p className="mt-2 font-display text-sm font-bold text-white">
+          ₹3,999 <span className="text-[8px] font-normal text-white/50">· Landing page</span>
+        </p>
+      </Layer>
+      <Layer z={100} className="bottom-[8%] left-[16%] flex items-center gap-1.5 rounded-full bg-[var(--p)] px-3 py-2 text-[10px] font-semibold text-black shadow-2xl shadow-[var(--p)]/40">
+        <Sparkles size={12} /> Get a Website Like This
+      </Layer>
+      <Layer z={80} className={cn(glass, "bottom-[14%] right-[10%] animate-float px-2.5 py-1.5 text-[9px] text-white")}>
+        <Check size={10} className="mr-1 inline text-[var(--p)]" /> Enquiry prefilled
+      </Layer>
+    </>
+  );
+}
+
 function DefaultMock() {
   return (
     <Layer z={60} className={cn(glass, "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-3 text-white")}>
@@ -372,4 +418,5 @@ const MOCKS: Record<string, () => React.ReactElement> = {
   "brightway-solar": SolarMock,
   "nextjs-video-app": VideoMock,
   "mern-todo": TodoMock,
+  webpitch: WebPitchMock,
 };
