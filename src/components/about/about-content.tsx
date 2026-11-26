@@ -1,13 +1,16 @@
 "use client";
 
-import { ArrowUpRight, Code2, Compass, Rocket, Sparkles, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { ArrowUpRight, Award, Code2, Compass, Rocket, Sparkles, Users, X } from "lucide-react";
 import { aboutContent } from "@/data/about";
+import { certifications } from "@/data/certifications";
 import { education } from "@/data/education";
 import { site } from "@/data/site";
 import { useLanguage } from "@/context/language-context";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
-import { LinkButton } from "@/components/ui/button";
+import { Button, LinkButton } from "@/components/ui/button";
 import { ScrollWords } from "@/components/motion/scroll-words";
 import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
@@ -16,6 +19,21 @@ import { SkillsTimeline } from "@/components/skills/skills-timeline";
 export function AboutContent() {
   const { t } = useLanguage();
   const primary = education.find((e) => e.level === "primary");
+  const [openCert, setOpenCert] = useState<(typeof certifications)[number] | null>(null);
+
+  useEffect(() => {
+    if (!openCert) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenCert(null);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [openCert]);
 
   const chapters = [
     { icon: <Code2 size={18} />, title: "Focus", body: aboutContent.focus, color: "var(--accent)" },
@@ -75,7 +93,62 @@ export function AboutContent() {
             </div>
           </Reveal>
         )}
+
+        {certifications.map((cert) => (
+          <Reveal key={cert.title} className="mt-4">
+            <div className="flex flex-col gap-5 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-7 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--accent)] text-[var(--accent-foreground)]">
+                  <Award size={20} />
+                </span>
+                <div>
+                  <p className="font-display text-lg font-bold text-[var(--foreground)]">{cert.title}</p>
+                  <p className="text-sm text-[var(--muted)]">
+                    {cert.issuer}
+                    {cert.instructor ? ` · ${cert.instructor}` : ""} · Certificate of Completion
+                  </p>
+                </div>
+              </div>
+              <Button variant="secondary" size="sm" className="group" onClick={() => setOpenCert(cert)}>
+                View Certificate
+                <ArrowUpRight size={14} className="transition-transform group-hover:rotate-45" />
+              </Button>
+            </div>
+          </Reveal>
+        ))}
       </Container>
+
+      {openCert &&
+        createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${openCert.title} certificate`}
+          onClick={() => setOpenCert(null)}
+          className="fixed inset-0 z-[85] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-2xl rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-2xl"
+          >
+            <button
+              type="button"
+              onClick={() => setOpenCert(null)}
+              aria-label="Close certificate"
+              className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-md transition-transform hover:scale-110"
+            >
+              <X size={16} />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={openCert.image}
+              alt={`${openCert.title} certificate from ${openCert.issuer}`}
+              className="h-auto max-h-[75vh] w-full rounded-xl object-contain"
+            />
+          </div>
+        </div>,
+          document.body,
+        )}
 
       <SkillsTimeline />
     </>
